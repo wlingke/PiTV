@@ -11,7 +11,7 @@ module.exports.off = function(done){
     })
 };
 
-module.exports.watchShort = function(done){
+module.exports.watchShort = function(url, done){
     if(!!url && isUrlValid(url)){
         exec("bash watchShort.sh " + url, function puts(error, stdout, stderr) {
             sys.puts(stdout);
