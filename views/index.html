@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seale Pi TV</title>
+</head>
+<body>
+<h1>Welcome to Seale TV.</h1>
+
+<p>Input a URL to play below.</p>
+<input type="text" id="videoUrl">
+<button id="start">Start</button>
+
+<div id="message"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script>
+
+    function showSuccess() {
+        var m = $('#message');
+        m.empty();
+        m.html('<p style="display: table; color: darkgreen; border: 2px solid darkgreen; padding: 10px"><strong>TV Started!</strong></p>');
+    }
+    function showError(message) {
+        message = message || "ERROR OCCURRED";
+        var m = $('#message');
+        m.empty();
+        m.html('<p style="display: table; color: red; border: 2px solid red; padding: 10px">' + message + '<strong></strong></p>');
+    }
+
+    function submit() {
+        var url = $('#videoUrl').val();
+        $.ajax({
+            type: "POST",
+            url: '/run-tv',
+            data: {
+                videoUrl: url
+            },
+            success: function () {
+                showSuccess();
+                setTimeout(function () {
+                    $('#message').empty()
+                }, 5000);
+            },
+            error: function(xhr, status, error){
+                showError(xhr.responseText);
+            }
+        });
+    }
+
+    $('#start').on('click', submit)
+
+</script>
+</body>
+</html>
