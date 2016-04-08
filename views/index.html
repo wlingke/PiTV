@@ -35,6 +35,7 @@
     }
 
     function submit() {
+        showSuccess('Playing Video...');
         var url = $('#videoUrl').val();
         var watchLong = $('#watchLong').is(':checked');
         var data = {
@@ -48,7 +49,7 @@
             url: '/watch',
             data: data,
             success: function () {
-                showSuccess("TV Started");
+                showSuccess("Video Completed!");
                 setTimeout(function () {
                     $('#message').empty()
                 }, 5000);
