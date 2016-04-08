@@ -7,8 +7,14 @@
 <h1>Welcome to Seale TV.</h1>
 
 <p>Input a URL to play below.</p>
-<input type="text" id="videoUrl">
+
+<div style="margin-bottom: 10px;">
+    <input type="text" id="videoUrl"><br>
+    <input type="checkbox" id="watchLong">Watch Long Video (Must manually turn off TV via below)
+</div>
 <button id="start">Start</button>
+<button id="off">Turn Off TV</button>
+
 
 <div id="message"></div>
 
@@ -16,10 +22,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <script>
 
-    function showSuccess() {
+    function showSuccess(message) {
         var m = $('#message');
         m.empty();
-        m.html('<p style="display: table; color: darkgreen; border: 2px solid darkgreen; padding: 10px"><strong>TV Started!</strong></p>');
+        m.html('<p style="display: table; color: darkgreen; border: 2px solid darkgreen; padding: 10px"><strong>' + message + '</strong></p>');
     }
     function showError(message) {
         message = message || "ERROR OCCURRED";
@@ -30,25 +36,47 @@
 
     function submit() {
         var url = $('#videoUrl').val();
+        var watchLong = $('#watchLong').is(':checked');
+        var data = {
+            videoUrl: url
+        };
+        if (!!watchLong) {
+            data.watchLong = true;
+        }
         $.ajax({
             type: "POST",
-            url: '/run-tv',
-            data: {
-                videoUrl: url
-            },
+            url: '/watch',
+            data: data,
             success: function () {
-                showSuccess();
+                showSuccess("TV Started");
                 setTimeout(function () {
                     $('#message').empty()
                 }, 5000);
             },
-            error: function(xhr, status, error){
+            error: function (xhr, status, error) {
                 showError(xhr.responseText);
             }
         });
     }
+    function turnOff() {
+        $.ajax({
+            type: "POST",
+            url: "/off",
+            data: {},
+            success: function () {
+                showSuccess("TV Turned Off");
+                setTimeout(function () {
+                    $('#message').empty()
+                }, 5000);
+            },
+            error: function (xhr, status, error) {
+                showError(xhr.responseText);
+            }
+        })
+    }
 
     $('#start').on('click', submit)
+    $('#off').on('click', turnOff)
 
 </script>
 </body>
