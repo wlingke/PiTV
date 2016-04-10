@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Seale Pi TV</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 <h1>Welcome to Seale TV.</h1>
@@ -10,10 +11,18 @@
 
 <div style="margin-bottom: 10px;">
     <input type="text" id="videoUrl"><br>
-    <input type="checkbox" id="watchLong">Watch Long Video (Must manually turn off TV via below)
+    <input type="checkbox" id="watchLong">Watch Long Video (Must turn off TV manually)
 </div>
-<button id="start">Start</button>
-<button id="off">Turn Off TV</button>
+<div>
+    <button id="start">Start</button>
+</div>
+
+<hr style="margin: 10px;">
+
+<div>
+    <button id="off">Turn Off TV</button>
+    <button id="startAaron">Start Aaron</button>
+</div>
 
 
 <div id="message"></div>
@@ -35,9 +44,36 @@
     }
 
     function submit() {
-        showSuccess('Playing Video...');
         var url = $('#videoUrl').val();
         var watchLong = $('#watchLong').is(':checked');
+        start(url, watchLong);
+    }
+    function turnOff() {
+        $.ajax({
+            type: "POST",
+            url: "/off",
+            data: {},
+            success: function () {
+                showSuccess("TV Turned Off");
+                setTimeout(function () {
+                    $('#message').empty()
+                }, 5000);
+            },
+            error: function (xhr, status, error) {
+                showError(xhr.responseText);
+            }
+        })
+    }
+
+    function startAaron() {
+        var url = "https://www.youtube.com/watch?v=wUjQMIMDSAY";
+        start(url);
+    }
+
+
+    function start(url, watchLong) {
+        showSuccess('Playing Video...');
+
         var data = {
             videoUrl: url
         };
@@ -59,25 +95,11 @@
             }
         });
     }
-    function turnOff() {
-        $.ajax({
-            type: "POST",
-            url: "/off",
-            data: {},
-            success: function () {
-                showSuccess("TV Turned Off");
-                setTimeout(function () {
-                    $('#message').empty()
-                }, 5000);
-            },
-            error: function (xhr, status, error) {
-                showError(xhr.responseText);
-            }
-        })
-    }
 
-    $('#start').on('click', submit)
-    $('#off').on('click', turnOff)
+
+    $('#start').on('click', submit);
+    $('#off').on('click', turnOff);
+    $('#startAaron').on('click', startAaron);
 
 </script>
 </body>
